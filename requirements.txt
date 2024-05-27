@@ -7,3 +7,4 @@ numpy~=1.26.4
 seaborn~=0.13.2
 ipywidgets~=8.1.2
 ipython~=8.24.0
+plotly-express~=0.4.1
