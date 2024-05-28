@@ -12,9 +12,13 @@ import os
 from ipywidgets import Checkbox
 from ipywidgets import interactive
 from ipywidgets import Output  # <<<< Here is the required import statement
+import streamlit as st
+
 
 
 print(os.getcwd())
+
+import streamlit as st
 
 INTRODUCTION_TEXT = """
 # Vehicle Price Analysis
@@ -22,6 +26,8 @@ In this project, we will analyze a dataset of vehicle prices. We will use intera
 the function 'f', which is directly linked to the state of the 'Show Trend Line' checkbox. When the checkbox state changes, 
 this will be reflected on the results of the function 'f'.
 """
+
+st.write(INTRODUCTION_TEXT)
 
 print(INTRODUCTION_TEXT)
 
