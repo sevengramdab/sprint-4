@@ -9,6 +9,8 @@ from IPython.display import display
 import numpy as np
 import seaborn as sns
 import os
+from ipywidgets import Checkbox
+
 
 print(os.getcwd())
 
