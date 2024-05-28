@@ -120,30 +120,26 @@ import numpy as np
 
 
 # Function to update the histogram based on the trend line, outlier removal options, and ensuring no negative y values
-def update_histogram(show_trendline, remove_outliers):
-    # Filter out outliers if the checkbox is checked
-    if remove_outliers:
-        Q1 = vehicles_df['price'].quantile(0.25)
-        Q3 = vehicles_df['price'].quantile(0.75)
-        IQR = Q3 - Q1
-        filtered_df = vehicles_df.query('(@Q1 - 1.5 * @IQR) <= price <= (@Q3 + 1.5 * @IQR)')
-    else:
-        filtered_df = vehicles_df
-
-    fig = px.histogram(filtered_df, x='price', title='Vehicle Price Distribution')
-
+def update_histogram(show_trendline):
+    fig = px.histogram(vehicles_df, x='price', title='Vehicle Price Distribution')
     if show_trendline:
-        # Calculate and display the trend line
-        # Ensure no negative y values by clipping at 0
-        y_values = np.poly1d(np.polyfit(filtered_df['price'],
-                                        np.histogram(filtered_df['price'], bins=40)[0],
-                                        1))(np.sort(filtered_df['price']))
-        y_values_clipped = np.clip(y_values, a_min=0, a_max=None)  # Clip negative values to 0
-        fig.add_traces(go.Scatter(x=np.sort(filtered_df['price']),
-                                  y=y_values_clipped,
-                                  mode='lines', name='Trend Line'))
-    fig.update_layout(showlegend=True)
+        fig.add_trace(go.Scatter(
+            x=np.sort(vehicles_df['price']),
+            y=np.poly1d(np.polyfit(
+                vehicles_df['price'],
+                np.histogram(vehicles_df['price'], bins=40)[0],
+                1))(np.sort(vehicles_df['price'])),
+            mode='lines',
+            name='Trend Line'))
     fig.show()
+
+
+# Create interactive widget
+interactive_plot = interactive(
+    update_histogram,
+    show_trendline=widgets.Checkbox(value=False, description='Show Trend Line')
+)
+display(interactive_plot)
 
 
 # Create interactive widgets with specified layout for better appearance
