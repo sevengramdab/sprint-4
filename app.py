@@ -10,6 +10,8 @@ import numpy as np
 import seaborn as sns
 import os
 from ipywidgets import Checkbox
+from ipywidgets import interactive
+
 
 
 print(os.getcwd())
@@ -254,11 +256,11 @@ def update_histogram(show_trendline, bins, show_median_line, show_mean_line):
 
 # Create interactive widget with additional controls for adjusting the number of bins and showing median and mean lines
 interactive_plot = interactive(update_histogram,
-                               show_trendline=widgets.Checkbox(value=False, description='Show Trend Line'),
                                bins=widgets.IntSlider(value=20, min=100, max=749, step=1, description='Bins'),
                                # Adjusted bin slider range for practicality
                                show_median_line=widgets.Checkbox(value=False, description='Show Median Line'),
-                               show_mean_line=widgets.Checkbox(value=False, description='Show Mean Line'))
+                               show_mean_line=widgets.Checkbox(value=False, description='Show Mean Line'),
+                               show_trend_line=st.sidebar.checkbox('Show Trend Line', value=False))
 display(interactive_plot)
 
 #streamlit run D:\GIthub repository\sprint-4\app.py [ARGUMENTS]
