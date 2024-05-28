@@ -11,7 +11,7 @@ import seaborn as sns
 import os
 from ipywidgets import Checkbox
 from ipywidgets import interactive
-
+from ipywidgets import Output  # <<<< Here is the required import statement
 
 
 print(os.getcwd())
@@ -207,63 +207,29 @@ import plotly.graph_objects as go
 import numpy as np
 
 
-# Function to update the histogram based on the trend line visibility, x-axis limit, bin size, and additional plotted lines
-def update_histogram(show_trendline, bins, show_median_line, show_mean_line):
-    fig = px.histogram(vehicles_df, x='price', title='Vehicle Price Distribution', nbins=bins)
-    fig.update_xaxes(range=[0, 50000])  # Limiting x-axis to 50k
-    # Update to make each bar alternating colors
-    fig.update_traces(marker=dict(color=['indianred', 'lightblue'] * int(bins / 2)), marker_line_width=1.5,
-                      opacity=0.75)
+def f(show_trendline):
+    # Plot histogram
+    plt.hist(vehicles_df['price'], bins=20)
+
     if show_trendline:
-        # Filter data to include only prices up to 50k for trend line calculation
-        filtered_data = vehicles_df[vehicles_df['price'] <= 50000]
-        # Calculate histogram data manually to avoid issues with trend line calculation
-        hist_data, bin_edges = np.histogram(filtered_data['price'], bins=bins)
-        bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
-        # Fit a polynomial of degree 1 (linear fit) to the histogram data
-        coeffs = np.polyfit(bin_centers, hist_data, 1)
-        poly = np.poly1d(coeffs)
-        # Generate x values from the minimum to the maximum bin center for plotting the trend line
-        x_trend = np.linspace(min(bin_centers), max(bin_centers), 500)
-        y_trend = poly(x_trend)
-        fig.add_traces(go.Scatter(x=x_trend, y=y_trend, mode='lines', name='Trend Line', line=dict(color='blue')))
-    if show_median_line:
-        median_price = vehicles_df['price'].median()
-        fig.add_shape(type='line',
-                      line=dict(dash='dash', color='green', width=2),
-                      x0=median_price, y0=0,
-                      x1=median_price, y1=1,
-                      xref='x', yref='paper',
-                      name='Median Price')
-        fig.add_annotation(x=median_price, y=0.95, xref='x', yref='paper',
-                           text='Median Price', showarrow=False, font=dict(color='green'))
-    if show_mean_line:
-        mean_price = vehicles_df['price'].mean()
-        fig.add_shape(type='line',
-                      line=dict(dash='dash', color='red', width=2),
-                      x0=mean_price, y0=0,
-                      x1=mean_price, y1=1,
-                      xref='x', yref='paper',
-                      name='Mean Price')
-        fig.add_annotation(x=mean_price, y=0.90, xref='x', yref='paper',
-                           text='Mean Price', showarrow=False, font=dict(color='red'))
-    fig.show()
+        # Calculate histogram data
+        counts, edges = np.histogram(vehicles_df['price'], bins=20)
+        # Calculate centers of bins
+        centers = 0.5 * (edges[:-1] + edges[1:])
+        # Fit polynomial (of degree 1) to the bin centers and the counts
+        p = np.polyfit(centers, counts, 1)
+        # Evaluate polynomial
+        y = np.polyval(p, centers)
+        plt.plot(centers, y, 'r--')
+
+    plt.show()
 
 
-# Create interactive widget with additional controls for adjusting the number of bins and showing median and mean lines
-interactive_plot = interactive(update_histogram,
-                               bins=widgets.IntSlider(value=20, min=100, max=749, step=1, description='Bins'),
-                               # Adjusted bin slider range for practicality
-                               show_median_line=widgets.Checkbox(value=False, description='Show Median Line'),
-                               show_mean_line=widgets.Checkbox(value=False, description='Show Mean Line'),
-                               show_trend_line=st.sidebar.checkbox('Show Trend Line', value=False))
+# Create the checkbox
+show_trendline = Checkbox(value=False, description='Show Trend Line')
+
+# Make the widget
+interactive_plot = interactive(f, show_trendline=show_trendline)
+
+# Display the widget
 display(interactive_plot)
-
-#streamlit run D:\GIthub repository\sprint-4\app.py [ARGUMENTS]
-interactive(children=(Checkbox(value=False, description='Show Trend Line'), Output()), _dom_classes=('widget-interact',))
-VBox(children=(Checkbox(value=False, description='Show Trend Line', layout=Layout(margin='0 0 0 20px', width='auto')),
-               Checkbox(value=False, description='Remove Outliers', layout=Layout(margin='0 0 0 20px', width='auto'))))
-interactive(children=(
-Checkbox(value=False, description='Show Trend Line', layout=Layout(margin='0 0 0 20px', width='auto')),
-Checkbox(value=False, description='Remove Outliers', layout=Layout(margin='0 0 0 20px', width='auto')), Output()),
-            _dom_classes=('widget-interact',))
