@@ -16,6 +16,11 @@ from ipywidgets import Output  # <<<< Here is the required import statement
 
 print(os.getcwd())
 
+print("""
+# Vehicle Price Analysis
+
+In this project, we will analyze a dataset of vehicle prices. We will use interactive widgets to control the arguments of the function 'f', which is directly linked to the state of the 'Show Trend Line' checkbox. When the checkbox state changes, this will be reflected on the results of the function 'f'.
+""")
 
 # ... the rest of your code...
 
