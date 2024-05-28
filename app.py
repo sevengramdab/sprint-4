@@ -120,25 +120,25 @@ import numpy as np
 
 
 # Function to update the histogram based on the trend line, outlier removal options, and ensuring no negative y values
+# Create the checkbox widget
+show_trendline = widgets.Checkbox(value=False, description='Show Trend Line')
+
+
+# Function to update the histogram based on the trend line visibility
 def update_histogram(show_trendline):
     fig = px.histogram(vehicles_df, x='price', title='Vehicle Price Distribution')
     if show_trendline:
-        fig.add_trace(go.Scatter(
-            x=np.sort(vehicles_df['price']),
-            y=np.poly1d(np.polyfit(
-                vehicles_df['price'],
-                np.histogram(vehicles_df['price'], bins=40)[0],
-                1))(np.sort(vehicles_df['price'])),
-            mode='lines',
-            name='Trend Line'))
+        fig.add_traces(go.Scatter(x=np.sort(vehicles_df['price']),
+                                  y=np.poly1d(np.polyfit(vehicles_df['price'],
+                                                         np.histogram(vehicles_df['price'], bins=40)[0],
+                                                         1))(np.sort(vehicles_df['price'])),
+                                  mode='lines', name='Trend Line'))
     fig.show()
 
 
-# Create interactive widget
-interactive_plot = interactive(
-    update_histogram,
-    show_trendline=widgets.Checkbox(value=False, description='Show Trend Line')
-)
+# Create the interactive plot
+interactive_plot = interactive(update_histogram, show_trendline=show_trendline)
+display(interactive_plot)
 display(interactive_plot)
 
 
