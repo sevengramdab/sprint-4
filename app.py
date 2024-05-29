@@ -38,10 +38,36 @@ print(INTRODUCTION_TEXT)
 sns.set(style="whitegrid")
 vehicles = pd.read_csv('vehicles_us.csv')
 
+# Fill missing values in 'model_year' by grouping by 'model' and using the median year
+vehicles['model_year'] = vehicles.groupby('model')['model_year'].transform(lambda x: x.fillna(x.median()))
+
+# Fill missing values in 'cylinders' by grouping by 'model' and using the median cylinders
+vehicles['cylinders'] = vehicles.groupby('model')['cylinders'].transform(lambda x: x.fillna(x.median()))
+
+# Fill missing values in 'odometer' by grouping by 'model_year' and using the median odometer
+vehicles['odometer'] = vehicles.groupby('model_year')['odometer'].transform(lambda x: x.fillna(x.median()))
+
+# Remove outliers in 'model_year' and 'price'
+q1_model_year = vehicles['model_year'].quantile(0.25)
+q3_model_year = vehicles['model_year'].quantile(0.75)
+iqr_model_year = q3_model_year - q1_model_year
+lower_bound_model_year = q1_model_year - 1.5 * iqr_model_year
+upper_bound_model_year = q3_model_year + 1.5 * iqr_model_year
+
+q1_price = vehicles['price'].quantile(0.25)
+q3_price = vehicles['price'].quantile(0.75)
+iqr_price = q3_price - q1_price
+lower_bound_price = q1_price - 1.5 * iqr_price
+upper_bound_price = q3_price + 1.5 * iqr_price
+
+vehicles = vehicles[(vehicles['model_year'] >= lower_bound_model_year) & (vehicles['model_year'] <= upper_bound_model_year)]
+vehicles = vehicles[(vehicles['price'] >= lower_bound_price) & (vehicles['price'] <= upper_bound_price)]
+
 print(vehicles.head())
 print(vehicles.info())
 
 import pandas as pd
+
 
 # Load the dataset
 vehicles_df = pd.read_csv('vehicles_us.csv')
@@ -139,15 +165,21 @@ show_trendline = widgets.Checkbox(value=False, description='Show Trend Line')
 
 
 # Function to update the histogram based on the trend line visibility
-def update_histogram(show_trendline):
-    fig = px.histogram(vehicles_df, x='price', title='Vehicle Price Distribution')
+def update_histogram(show_trendline=show_trendline.value):
+    fig = px.histogram(vehicles, x='price', title='Vehicle Price Distribution')
     if show_trendline:
-        fig.add_traces(go.Scatter(x=np.sort(vehicles_df['price']),
-                                  y=np.poly1d(np.polyfit(vehicles_df['price'],
-                                                         np.histogram(vehicles_df['price'], bins=40)[0],
-                                                         1))(np.sort(vehicles_df['price'])),
-                                  mode='lines', name='Trend Line'))
-    fig.show()
+
+        # Check for non-NaN values in your data
+        nan_mask = np.isnan(vehicles_df['price'])
+
+        if not all(nan_mask):
+            coefficients = np.polyfit(vehicles_df['price'][~nan_mask],
+                                      np.histogram(vehicles_df['price'][~nan_mask], bins=40)[0], 1)
+            polyd = np.poly1d(coefficients)
+            x_sorted = np.sort(vehicles_df['price'])
+            y_sorted = polyd(x_sorted)
+            fig.add_trace(go.Scatter(x=x_sorted, y=y_sorted, mode='lines', name='Trend Line'))
+            fig.show()
 
 
 # Create the interactive plot
