@@ -300,9 +300,9 @@ box = VBox(
     children=(Checkbox(value=False, description='Show Trend Line', layout=Layout(margin='0 0 0 20px', width='auto')),))
 display(box)
 
-output = '''
-### Project Output: Vehicle Data Analysis
+import streamlit as st
 
+output = '''
 #### Objective
 The objective of this project was to analyze a dataset of used vehicles to understand the distribution of vehicle prices, the relationship between vehicle age and price, and to preprocess the data for more accurate analysis.
 
@@ -329,4 +329,6 @@ The objective of this project was to analyze a dataset of used vehicles to under
 #### Conclusion
 The preprocessing steps ensured that the dataset was more complete and free from extreme outliers, making the analysis more reliable. The visualizations provided valuable insights into the distribution of vehicle prices and the relationship between vehicle age and price. These insights can be useful for understanding market trends and making informed decisions in the used vehicle market.
 '''
+
+st.markdown(output)
 
