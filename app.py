@@ -73,14 +73,26 @@ import pandas as pd
 import plotly_express as px
 import plotly.graph_objects as go
 
+#creates a new column 'manufacturer' in the dataframe 'vehicles' based on the 'model' column.
+# It applies a function that splits each model name by space and takes the first word as the manufacturer.
 vehicles['manufacturer'] = vehicles['model'].apply(lambda x: x.split()[0])
 
+# This line creates a header 'Data viewer' in the dashboard.
 st.header('Data viewer')
+
+# This line creates a checkbox named 'Include manufactures with less than 1000 ads'.
+# if this box is checked by the user, the variable show_manuf_1k_ads will be True.
 show_manuf_1k_ads = st.checkbox('Include manufacturers with less than 1000 ads')
+
+
+# This code block is executed if show_manuf_1k_ads is False.
+# meaning the checkbox is not checked. It filters the dataframe 'vehicles' to include only manufacturers with more than 1000 ads.
 if not show_manuf_1k_ads:
     df = vehicles.groupby('manufacturer').filter(lambda x: len(x) > 1000)
 
 st.dataframe(vehicles)
+
+# creating a plot
 st.header('Vehicle types by manufacturer')
 st.write(px.histogram(vehicles, x='manufacturer', color='type'))
 st.header('Histogram of `condition` vs `model_year`')
@@ -100,6 +112,8 @@ st.write(px.histogram(vehicles, x='model_year', color='condition'))
 # a lot more concise!
 # -------------------------------------------------------
 
+# creates an interactive web app with Streamlit, allowing users to compare and visualize the price
+# distribution of vehicles between any two manufacturers, which can optionally be normalized to percentages.
 st.header('Compare price distribution between manufacturers')
 manufac_list = sorted(vehicles['manufacturer'].unique())
 manufacturer_1 = st.selectbox('Select manufacturer 1',
@@ -273,7 +287,8 @@ display(interactive_plot)
 from ipywidgets import interactive, Checkbox, Output, VBox, Layout
 from IPython.display import display
 
-
+# create an interactive app that allows users to select two vehicle manufacturers.
+# It then renders a histogram overlay showing their comparative vehicle price distributions, which can be normalized.
 def f(Show_Trend_Line):
     return Show_Trend_Line
 
@@ -284,3 +299,34 @@ display(interactive_plot)
 box = VBox(
     children=(Checkbox(value=False, description='Show Trend Line', layout=Layout(margin='0 0 0 20px', width='auto')),))
 display(box)
+
+output = '''
+### Project Output: Vehicle Data Analysis
+
+#### Objective
+The objective of this project was to analyze a dataset of used vehicles to understand the distribution of vehicle prices, the relationship between vehicle age and price, and to preprocess the data for more accurate analysis.
+
+#### Data Preprocessing
+1. **Handling Missing Values:**
+   - **Model Year:** Missing values were filled by grouping the data by 'model' and using the median model year within each group.
+   - **Cylinders:** Missing values were filled by grouping the data by 'model' and using the median number of cylinders within each group.
+   - **Odometer:** Missing values were filled by grouping the data by 'model_year' and using the median odometer reading within each group.
+
+2. **Removing Outliers:**
+   - Outliers in the 'model_year' and 'price' columns were removed using the interquartile range (IQR) method to ensure that extreme values do not skew the analysis.
+
+#### Visualizations
+1. **Histogram of Vehicle Prices:**
+   - A histogram was created to show the distribution of vehicle prices. This visualization helps in understanding the range and frequency of vehicle prices, highlighting the most common price ranges and any outliers.
+
+2. **Scatter Plot of Price vs. Model Year:**
+   - A scatter plot was created with 'model_year' on the x-axis and 'price' on the y-axis. This plot helps in understanding the relationship between the age of a vehicle and its price. Generally, newer vehicles tend to be priced higher than older ones.
+
+#### Analysis
+- The histogram of vehicle prices revealed the most common price ranges and highlighted any outliers.
+- The scatter plot of price versus model year showed the expected trend where newer vehicles are generally priced higher than older ones. It also revealed clusters and outliers, providing insights into the pricing patterns of used vehicles.
+
+#### Conclusion
+The preprocessing steps ensured that the dataset was more complete and free from extreme outliers, making the analysis more reliable. The visualizations provided valuable insights into the distribution of vehicle prices and the relationship between vehicle age and price. These insights can be useful for understanding market trends and making informed decisions in the used vehicle market.
+'''
+
