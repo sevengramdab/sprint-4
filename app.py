@@ -66,36 +66,23 @@ vehicles = vehicles[(vehicles['price'] >= lower_bound_price) & (vehicles['price'
 print(vehicles.head())
 print(vehicles.info())
 
-import pandas as pd
-
-
-# Load the dataset
-vehicles_df = pd.read_csv('vehicles_us.csv')
-# Display the first few rows of the dataframe
-display(vehicles_df.head())
 # %%
 from ipywidgets import interactive, HBox, VBox, widgets
-import plotly.express as px
-import plotly.graph_objects as go
-import numpy as np
-
-
 import streamlit as st
 import pandas as pd
 import plotly_express as px
 import plotly.graph_objects as go
 
-df = pd.read_csv('vehicles_us.csv')
-df['manufacturer'] = df['model'].apply(lambda x: x.split()[0])
+vehicles['manufacturer'] = vehicles['model'].apply(lambda x: x.split()[0])
 
 st.header('Data viewer')
 show_manuf_1k_ads = st.checkbox('Include manufacturers with less than 1000 ads')
 if not show_manuf_1k_ads:
-    df = df.groupby('manufacturer').filter(lambda x: len(x) > 1000)
+    df = vehicles.groupby('manufacturer').filter(lambda x: len(x) > 1000)
 
-st.dataframe(df)
+st.dataframe(vehicles)
 st.header('Vehicle types by manufacturer')
-st.write(px.histogram(df, x='manufacturer', color='type'))
+st.write(px.histogram(vehicles, x='manufacturer', color='type'))
 st.header('Histogram of `condition` vs `model_year`')
 
 # -------------------------------------------------------
@@ -109,19 +96,19 @@ st.header('Histogram of `condition` vs `model_year`')
 # -------------------------------------------------------
 
 # histograms in plotly_express:
-st.write(px.histogram(df, x='model_year', color='condition'))
+st.write(px.histogram(vehicles, x='model_year', color='condition'))
 # a lot more concise!
 # -------------------------------------------------------
 
 st.header('Compare price distribution between manufacturers')
-manufac_list = sorted(df['manufacturer'].unique())
+manufac_list = sorted(vehicles['manufacturer'].unique())
 manufacturer_1 = st.selectbox('Select manufacturer 1',
                               manufac_list, index=manufac_list.index('chevrolet'))
 
 manufacturer_2 = st.selectbox('Select manufacturer 2',
                               manufac_list, index=manufac_list.index('hyundai'))
-mask_filter = (df['manufacturer'] == manufacturer_1) | (df['manufacturer'] == manufacturer_2)
-df_filtered = df[mask_filter]
+mask_filter = (vehicles['manufacturer'] == manufacturer_1) | (vehicles['manufacturer'] == manufacturer_2)
+df_filtered = vehicles[mask_filter]
 normalize = st.checkbox('Normalize histogram', value=True)
 if normalize:
     histnorm = 'percent'
@@ -136,12 +123,12 @@ st.write(px.histogram(df_filtered,
 
 # Function to update the histogram based on the trend line visibility
 def update_histogram(show_trendline):
-    fig = px.histogram(vehicles_df, x='price', title='Vehicle Price Distribution')
+    fig = px.histogram(vehicles, x='price', title='Vehicle Price Distribution')
     if show_trendline:
-        fig.add_traces(go.Scatter(x=np.sort(vehicles_df['price']),
-                                  y=np.poly1d(np.polyfit(vehicles_df['price'],
-                                                         np.histogram(vehicles_df['price'], bins=40)[0],
-                                                         1))(np.sort(vehicles_df['price'])),
+        fig.add_traces(go.Scatter(x=np.sort(vehicles['price']),
+                                  y=np.poly1d(np.polyfit(vehicles['price'],
+                                                         np.histogram(vehicles['price'], bins=40)[0],
+                                                         1))(np.sort(vehicles['price'])),
                                   mode='lines', name='Trend Line'))
     fig.show()
 
@@ -170,13 +157,13 @@ def update_histogram(show_trendline=show_trendline.value):
     if show_trendline:
 
         # Check for non-NaN values in your data
-        nan_mask = np.isnan(vehicles_df['price'])
+        nan_mask = np.isnan(vehicles['price'])
 
         if not all(nan_mask):
-            coefficients = np.polyfit(vehicles_df['price'][~nan_mask],
-                                      np.histogram(vehicles_df['price'][~nan_mask], bins=40)[0], 1)
+            coefficients = np.polyfit(vehicles['price'][~nan_mask],
+                                      np.histogram(vehicles['price'][~nan_mask], bins=40)[0], 1)
             polyd = np.poly1d(coefficients)
-            x_sorted = np.sort(vehicles_df['price'])
+            x_sorted = np.sort(vehicles['price'])
             y_sorted = polyd(x_sorted)
             fig.add_trace(go.Scatter(x=x_sorted, y=y_sorted, mode='lines', name='Trend Line'))
             fig.show()
@@ -212,7 +199,7 @@ import plotly.express as px
 # Limiting the plot to vehicles below 200k miles, limiting y axis to below 100,000, and only showing years from 1960 onward
 
 # First, filter the dataframe for vehicles below 200k miles
-vehicles_below_200k = vehicles_df[vehicles_df['odometer'] < 200000]
+vehicles_below_200k = vehicles[vehicles['odometer'] < 200000]
 
 # Then, calculate the average price per model year and type
 avg_price_by_year_type = vehicles_below_200k.groupby(['model_year', 'type'])['price'].mean().reset_index()
@@ -261,10 +248,10 @@ show_trendline = widgets.Checkbox(value=False, description='Show Trend Line')
 def update_histogram(show_trendline=show_trendline.value):
     fig = px.histogram(vehicles, x='price', title='Vehicle Price Distribution')
     if show_trendline:
-        fig.add_trace(go.Scatter(x=np.sort(vehicles_df['price']),
-                                 y=np.poly1d(np.polyfit(vehicles_df['price'],
-                                                        np.histogram(vehicles_df['price'], bins=40)[0],
-                                                        1))(np.sort(vehicles_df['price'])),
+        fig.add_trace(go.Scatter(x=np.sort(vehicles['price']),
+                                 y=np.poly1d(np.polyfit(vehicles['price'],
+                                                        np.histogram(vehicles['price'], bins=40)[0],
+                                                        1))(np.sort(vehicles['price'])),
                                  mode='lines', name='Trend Line'))
     fig.show()
 
