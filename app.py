@@ -327,7 +327,7 @@ interactive_plot = interactive(f, Show_Trend_Line=Checkbox(value=False, descript
 display(interactive_plot)
 
 box = VBox(
-    children=(Checkbox(value=False, description='Show Trend Line', layout=Layout(margin='0 0 0 20px', width='auto')),))
+    children=(Checkbox(value=False, description='Show Trend Line', layout=Layout(margin='0 0 0 20px', width='auto', color=['red', 'blue'])),))
 display(box)
 
 import streamlit as st
