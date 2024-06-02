@@ -21,6 +21,7 @@ print(os.getcwd())
 import streamlit as st
 
 INTRODUCTION_TEXT = """
+**Introduction**
 # Vehicle Price Analysis
 The used vehicle market is a dynamic and complex sector, influenced by various factors such as vehicle age, model, 
 condition, and market demand. Understanding the pricing patterns and trends in this market is crucial for buyers,
@@ -163,6 +164,7 @@ display(interactive_plot)
 
 intermediate_conclusion = '''
 #### 
+**Intermidiate Conclusions**
 The initial phase of our analysis focused on preprocessing the dataset to handle missing values and remove outliers.
  This step was crucial to ensure the integrity and reliability of our subsequent analyses. By filling missing values
   in the 'model_year', 'cylinders', and 'odometer' columns using median values within relevant groups, we addressed 
@@ -332,7 +334,7 @@ import streamlit as st
 
 final_conclusion = '''
 #### 
-
+**Final Conclusions**
 This project aimed to analyze a dataset of used vehicles to understand the distribution of vehicle prices and the
  relationship between vehicle age and price. Through meticulous data preprocessing, we addressed missing values and 
  removed outliers, ensuring the dataset's integrity and reliability for analysis.
