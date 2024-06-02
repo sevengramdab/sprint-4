@@ -22,7 +22,14 @@ import streamlit as st
 
 INTRODUCTION_TEXT = """
 # Vehicle Price Analysis
-In this project, we will analyze a dataset of vehicle prices. We will use interactive widgets to control the arguments of 
+The used vehicle market is a dynamic and complex sector, influenced by various factors such as vehicle age, model, 
+condition, and market demand. Understanding the pricing patterns and trends in this market is crucial for buyers,
+sellers, and market analysts. This project aims to analyze a dataset of used vehicles to uncover insights into the
+distribution of vehicle prices and the relationship between vehicle age and price. By preprocessing the data to handle
+missing values and remove outliers, we ensure that our analysis is accurate and reliable. Through visualizations and
+statistical analysis, we aim to provide a comprehensive understanding of the factors influencing vehicle prices, which
+can aid in making informed decisions in the used vehicle market.In this project, we will analyze a dataset of vehicle
+prices. We will use interactive widgets to control the arguments of 
 the function 'f', which is directly linked to the state of the 'Show Trend Line' checkbox. When the checkbox state changes, 
 this will be reflected on the results of the function 'f'.
 """
@@ -153,6 +160,27 @@ def update_histogram(show_trendline):
 interactive_plot = interactive(update_histogram,
                                show_trendline=widgets.Checkbox(value=False, description='Show Trend Line'))
 display(interactive_plot)
+
+intermediate_conclusion = '''
+#### 
+The initial phase of our analysis focused on preprocessing the dataset to handle missing values and remove outliers.
+ This step was crucial to ensure the integrity and reliability of our subsequent analyses. By filling missing values
+  in the 'model_year', 'cylinders', and 'odometer' columns using median values within relevant groups, we addressed 
+  data gaps that could have skewed our results. Additionally, removing outliers in the 'model_year' and 'price' 
+  columns helped in mitigating the impact of extreme values, providing a clearer picture of the general trends.
+
+Our preliminary visualizations, including histograms and scatter plots, revealed key insights into the distribution 
+of vehicle prices and the relationship between vehicle age and price. The histogram of vehicle prices highlighted the 
+most common price ranges and identified any outliers, while the scatter plot of price versus model year confirmed the 
+expected trend that newer vehicles tend to be priced higher than older ones.
+
+These initial findings set the stage for more detailed analyses, allowing us to delve deeper into specific factors 
+influencing vehicle prices and to explore additional relationships within the dataset. The preprocessing steps have 
+ensured that our data is robust, paving the way for more nuanced and insightful analyses in the subsequent phases of 
+the project.'''
+st.markdown(intermediate_conclusion)
+
+
 # %%
 from ipywidgets import interactive, HBox, VBox, widgets, Layout
 import plotly.express as px
@@ -302,33 +330,34 @@ display(box)
 
 import streamlit as st
 
-output = '''
-#### Objective
-The objective of this project was to analyze a dataset of used vehicles to understand the distribution of vehicle prices, the relationship between vehicle age and price, and to preprocess the data for more accurate analysis.
+final_conclusion = '''
+#### 
 
-#### Data Preprocessing
-1. **Handling Missing Values:**
-   - **Model Year:** Missing values were filled by grouping the data by 'model' and using the median model year within each group.
-   - **Cylinders:** Missing values were filled by grouping the data by 'model' and using the median number of cylinders within each group.
-   - **Odometer:** Missing values were filled by grouping the data by 'model_year' and using the median odometer reading within each group.
+This project aimed to analyze a dataset of used vehicles to understand the distribution of vehicle prices and the
+ relationship between vehicle age and price. Through meticulous data preprocessing, we addressed missing values and 
+ removed outliers, ensuring the dataset's integrity and reliability for analysis.
 
-2. **Removing Outliers:**
-   - Outliers in the 'model_year' and 'price' columns were removed using the interquartile range (IQR) method to ensure that extreme values do not skew the analysis.
+Key findings from our analysis include:
+1. **Distribution of Vehicle Prices:** The histogram of vehicle prices revealed the most common price ranges, providing 
+insights into the market's pricing structure. The removal of outliers helped in focusing on the core data, making the 
+analysis more representative of typical market conditions.
+2. **Relationship Between Vehicle Age and Price:** The scatter plot of price versus model year confirmed the expected 
+trend that newer vehicles generally command higher prices. This relationship is crucial for understanding depreciation 
+patterns and market valuation of used vehicles.
 
-#### Visualizations
-1. **Histogram of Vehicle Prices:**
-   - A histogram was created to show the distribution of vehicle prices. This visualization helps in understanding the range and frequency of vehicle prices, highlighting the most common price ranges and any outliers.
+The preprocessing steps, including filling missing values with median values within relevant groups and removing  
+outliers using the interquartile range (IQR) method, were essential in ensuring the accuracy of our analysis. These 
+steps mitigated the impact of data gaps and extreme values, providing a clearer and more reliable picture of the
+market trends.
 
-2. **Scatter Plot of Price vs. Model Year:**
-   - A scatter plot was created with 'model_year' on the x-axis and 'price' on the y-axis. This plot helps in understanding the relationship between the age of a vehicle and its price. Generally, newer vehicles tend to be priced higher than older ones.
+Overall, the insights gained from this project can be valuable for various stakeholders in the used vehicle market, 
+including buyers, sellers, and market analysts. Understanding the factors influencing vehicle prices and the general
+ pricing trends can aid in making informed decisions, whether it's pricing a vehicle for sale, negotiating a purchase, 
+ or analyzing market dynamics.
 
-#### Analysis
-- The histogram of vehicle prices revealed the most common price ranges and highlighted any outliers.
-- The scatter plot of price versus model year showed the expected trend where newer vehicles are generally priced higher than older ones. It also revealed clusters and outliers, providing insights into the pricing patterns of used vehicles.
+The methodologies and findings from this project can serve as a foundation for further research and analysis, 
+potentially incorporating additional variables and more sophisticated modeling techniques to deepen our understanding 
+of the used vehicle market.'''
 
-#### Conclusion
-The preprocessing steps ensured that the dataset was more complete and free from extreme outliers, making the analysis more reliable. The visualizations provided valuable insights into the distribution of vehicle prices and the relationship between vehicle age and price. These insights can be useful for understanding market trends and making informed decisions in the used vehicle market.
-'''
-
-st.markdown(output)
+st.markdown(final_conclusion)
 
